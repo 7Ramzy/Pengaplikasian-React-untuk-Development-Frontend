@@ -1,79 +1,49 @@
-const fs = require('node:fs');
-const path = require('node:path');
+// Data disimpan dalam array (in-memory)
+let products = [
+    { id: 1, name: "Laptop Acer", price: 15000000 },
+    { id: 2, name: "Keyboard Mechanical", price: 500000 }
+];
 
-const directory = path.join(__dirname, '../data');
-const file = path.join(directory, 'products.json');
-
-let inventory = {
-    nextId: 3,
-    products: [
-        { id: 1, name: 'Laptop Acer', price: 15000000 },
-        { id: 2, name: 'Keyboard Mechanical', price: 500000 },
-    ],
+// Mendapatkan semua produk
+const getAllProducts = (req, res) => {
+    res.status(200).json(products);
 };
 
-if (fs.existsSync(file)) inventory = JSON.parse(fs.readFileSync(file, 'utf8'));
+// Mendapatkan detail produk berdasarkan ID
+const getProductById = (req, res) => {
+    const id = parseInt(req.params.id);
+    const product = products.find(p => p.id === id);
 
-function saveInventory(next) {
-    fs.mkdirSync(directory, { recursive: true });
-    const temporaryFile = file + '.tmp';
-    fs.writeFileSync(temporaryFile, JSON.stringify(next, null, 2), 'utf8');
-    fs.renameSync(temporaryFile, file);
-    inventory = next;
-}
-
-function findProduct(req) {
-    const id = req.params.id;
-    return inventory.products.find(product => String(product.id) === id);
-}
-
-function productInput(body) {
-    const name = typeof body?.name === 'string' ? body.name.trim() : '';
-    const price = body?.price;
-    if (!name || name.length > 120 || !Number.isSafeInteger(price) || price < 0) return null;
-    return { name, price };
-}
-
-function notFound(res) {
-    return res.status(404).json({ message: 'Produk tidak ditemukan.' });
-}
-
-function invalidInput(res) {
-    return res.status(400).json({ message: 'Isi nama produk (maksimal 120 karakter) dan harga rupiah berupa bilangan bulat nonnegatif.' });
-}
-
-exports.getAllProducts = (req, res) => res.json(inventory.products);
-
-exports.getProductById = (req, res) => {
-    const product = findProduct(req);
-    return product ? res.json(product) : notFound(res);
+    if (product) {
+        res.status(200).json(product);
+    } else {
+        res.status(404).json({ message: "Produk tidak ditemukan" });
+    }
 };
 
-exports.createProduct = (req, res) => {
-    const input = productInput(req.body);
-    if (!input) return invalidInput(res);
+// Menambahkan produk baru
+const createProduct = (req, res) => {
+    const { name, price } = req.body;
+    
+    // Membuat ID baru yang auto-increment berdasarkan ID terakhir
+    const newId = products.length > 0 ? products[products.length - 1].id + 1 : 1;
+    
+    const newProduct = {
+        id: newId,
+        name: name,
+        price: price
+    };
 
-    const product = { id: inventory.nextId, ...input };
-    saveInventory({ nextId: product.id + 1, products: [...inventory.products, product] });
-    return res.status(201).json({ message: 'Produk berhasil ditambahkan', data: product });
+    products.push(newProduct);
+    
+    res.status(201).json({
+        message: "Produk berhasil ditambahkan",
+        data: newProduct
+    });
 };
 
-exports.updateProduct = (req, res) => {
-    const current = findProduct(req);
-    if (!current) return notFound(res);
-
-    const input = productInput(req.body);
-    if (!input) return invalidInput(res);
-
-    const product = { id: current.id, ...input };
-    saveInventory({ ...inventory, products: inventory.products.map(item => item.id === product.id ? product : item) });
-    return res.json(product);
-};
-
-exports.deleteProduct = (req, res) => {
-    const product = findProduct(req);
-    if (!product) return notFound(res);
-
-    saveInventory({ ...inventory, products: inventory.products.filter(item => item.id !== product.id) });
-    return res.status(204).end();
+module.exports = {
+    getAllProducts,
+    getProductById,
+    createProduct
 };
