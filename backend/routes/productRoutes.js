@@ -1,10 +1,11 @@
 const express = require('express');
-const router = express.Router();
-const productController = require('../controllers/productController');
+const products = require('../controllers/productController');
 
-// Definisi endpoint
-router.get('/', productController.getAllProducts);
-router.get('/:id', productController.getProductById);
-router.post('/', productController.createProduct);
+const router = express.Router();
+router.get('/', products.getAllProducts);
+router.get('/:id', products.getProductById);
+router.post('/', products.createProduct);
+router.put('/:id', products.updateProduct);
+router.delete('/:id', products.deleteProduct);
 
 module.exports = router;
