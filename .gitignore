@@ -3,3 +3,5 @@ dist/
 .env.local
 backend/data/products.json
 backend/data/*.tmp
+
+backend/data/*.sqlite*
