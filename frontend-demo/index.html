@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Uji Persistensi Produk</title>
+</head>
+<body>
+  <main>
+    <h1>Uji Persistensi Produk</h1>
+    <p>Tambahkan produk uji, mulai ulang backend SQLite, lalu muat ulang daftar untuk memastikan produk tetap tersedia.</p>
+    <form id="product">
+      <label>Nama <input name="name" required maxlength="120"></label>
+      <label>Harga (Rp) <input name="price" type="number" min="0" max="9007199254740991" step="1" required></label>
+      <button>Simpan produk</button>
+    </form>
+    <h2>Daftar produk</h2>
+    <button id="refresh" type="button">Muat ulang daftar</button>
+    <p id="status" role="status"></p>
+    <ul id="products"></ul>
+  </main>
+  <script type="module" src="./products.js"></script>
+</body>
+</html>
