@@ -1,3 +1,5 @@
+import { localProducts } from './localRepository'
+
 export type Product = { id: number; name: string; price: number }
 export type ProductInput = Omit<Product, 'id'>
 
@@ -20,7 +22,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return response.json()
 }
 
-export const products = {
+const apiProducts = {
   list: (signal: AbortSignal) => request<Product[]>('', { signal }),
   detail: (id: string, signal: AbortSignal) => request<Product>('/' + encodeURIComponent(id), { signal }),
   create: async (input: ProductInput) => {
@@ -30,6 +32,8 @@ export const products = {
   update: (id: string, input: ProductInput) => request<Product>('/' + encodeURIComponent(id), write('PUT', input)),
   remove: (id: string) => request<void>('/' + encodeURIComponent(id), { method: 'DELETE' }),
 }
+
+export const products: typeof apiProducts = import.meta.env.MODE === 'frontend' ? localProducts : apiProducts
 
 function write(method: string, input: ProductInput) {
   return { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) }

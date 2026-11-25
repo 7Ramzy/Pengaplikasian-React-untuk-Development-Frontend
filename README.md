@@ -1,19 +1,7 @@
-# Inventori Produk
+# Inventori Produk · React dan Express
 
-Aplikasi React dan TypeScript untuk mengelola produk melalui API Express. Navigasi memakai React Router, tampilan menggunakan Tailwind CSS, dan komponen mengikuti struktur Atomic Design dari [template perkuliahan](https://github.com/anasmcfudy/react-template).
+Gunakan Node.js 24. Jalankan `npm ci` dari root. Gabungkan perubahan PR backend tugas 4 untuk menjalankan seluruh fitur. Jalankan `npm run backend`, kemudian `npm run dev` di terminal lain.
 
-## Menjalankan secara lokal
+Vite meneruskan `/api/products` ke Express. React Router menangani halaman daftar, detail, formulir, dan 404. Antarmuka memakai Tailwind CSS dan Atomic Design.
 
-Gunakan Node.js 22.12 atau lebih baru dan jalankan perintah dari root repository.
-
-1. Instal dependensi dengan `npm ci`.
-2. Jalankan backend dengan `npm run backend`. API tersedia di `http://127.0.0.1:3000/products`.
-3. Di terminal kedua, jalankan frontend dengan `npm run dev`. Buka alamat yang ditampilkan Vite, biasanya `http://localhost:5173`.
-
-Vite meneruskan permintaan `/api/products` ke Express. Backend menyimpan perubahan di `backend/data/products.json` agar tetap tersedia setelah server dimulai ulang. Saat berkas tersebut belum ada, backend menampilkan dua produk awal.
-
-## Pengujian
-
-Jalankan `npm run build` untuk pemeriksaan TypeScript dan build produksi. Uji tambah, detail, edit, dan hapus melalui frontend. Buka URL produk yang sudah dihapus untuk melihat pesan produk tidak ditemukan, lalu buka URL seperti `/halaman-tidak-ada` untuk melihat halaman 404.
-
-Untuk hosting produksi, arahkan `/api/products` ke service Express dan gunakan fallback `index.html` untuk URL frontend.
+Jalankan `npm run build` untuk build terintegrasi. Mode frontend mandiri tersedia lewat `npm run dev:frontend` atau `npm run build:frontend`.
